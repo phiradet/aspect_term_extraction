@@ -1,0 +1,20 @@
+def add_feature(training_df):
+    training_df["bin_label"] = training_df.label.apply(lambda l: "O" if l == "O" else "I")
+    training_df["token_num"] = training_df.token.apply(lambda t: len(t.doc))
+    training_df["loc"] = training_df.token.apply(lambda t: t.i)
+    training_df["relative_loc"] = (training_df["loc"]) / training_df["token_num"]
+    training_df["len"] = training_df.token.apply(lambda t: len(t.text))
+    training_df["pos"] = training_df.token.apply(lambda t: t.pos_)
+    training_df["detailed_pos"] = training_df.token.apply(lambda t: t.tag_)
+    training_df["lemma"] = training_df.token.apply(lambda t: t.lemma_)
+    training_df["dep"] = training_df.token.apply(lambda t: t.dep_)
+    training_df["cluster"] = training_df.token.apply(lambda t: t.cluster)
+    training_df["like_num"] = training_df.token.apply(lambda t: t.like_num)
+    training_df["is_quote"] = training_df.token.apply(lambda t: t.is_quote)
+    training_df["is_head"] = training_df.token.apply(lambda t: t.head.text == t.text)
+    training_df["is_alpha"] = training_df.token.apply(lambda t: t.is_alpha)
+    training_df["is_digit"] = training_df.token.apply(lambda t: t.is_digit)
+    training_df["is_contain_upper"] = training_df.token.apply(lambda t: len([c for c in t.text if c.isupper()])!=0)
+    training_df["is_punct"] = training_df.token.apply(lambda t: t.is_punct)
+    training_df["is_start"] = training_df.token.apply(lambda t: t.i==0)
+    return training_df

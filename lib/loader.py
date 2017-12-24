@@ -2,17 +2,10 @@ import xmltodict
 import spacy
 import pandas as pd
 
-def load_data(path, nlp):
+def iterate_sentence(path, nlp):
+    
     with open(path) as f:
         training_dict = xmltodict.parse(f.read(), strip_whitespace=False)
-        
-    training_raw_df = {
-        "id": [],
-        "text": [],
-        "all_aspects": [],
-        "token": [],
-        "label": []
-    }
 
     for sentence in training_dict["sentences"]["sentence"]:
         sentence_id = sentence["@id"]
@@ -30,7 +23,21 @@ def load_data(path, nlp):
 
         sentence_tokens = list(nlp(sentence_text))
         labels = get_bio(sentence_tokens, aspect_info)
+        
+        yield sentence_tokens, sentence_id, sentence_text, aspect_info, labels
+    
 
+def load_data(path, nlp):
+    
+    training_raw_df = {
+        "id": [],
+        "text": [],
+        "all_aspects": [],
+        "token": [],
+        "label": []
+    }
+    
+    for sentence_tokens, sentence_id, sentence_text, aspect_info, labels in iterate_sentence(path, nlp):
         for n, t in enumerate(sentence_tokens):
             training_raw_df["id"].append(sentence_id)
             training_raw_df["text"].append(sentence_text)
